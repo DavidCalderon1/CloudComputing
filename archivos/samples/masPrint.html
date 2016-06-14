@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>How to Print Selective Sections of a Web Page 
+using CSS and DOM Scripting</title>
+<script type="text/javascript" src="../js/jquery-1.9.0.js"></script>
+<script type="text/javascript">
+function addEvent(elm, evType, fn, useCapture)
+{
+if(elm.addEventListener)
+  {
+  elm.addEventListener(evType, fn, useCapture);
+  return true;
+  }
+else if (elm.attachEvent)
+  {
+  var r = elm.attachEvent('on' + evType, fn);
+  return r;
+  }
+else
+  {
+  elm['on' + evType] = fn;
+  }
+}
+
+function addPrintLinks()
+{
+var el = document.getElementsByTagName("div");
+for (i=0;i<el .length;i++)
+  {
+  if (el[i].className=="section")
+    {
+    var newLink = document.createElement("A");
+    var newLinkText = document.createTextNode("print this section");
+    var newLinkPara = document.createElement("P");
+    newLinkPara.setAttribute("class","printbutton");
+    newLink.setAttribute("href","#");
+    var btId = "printbut_" + el[i].id;
+    newLink.setAttribute("id",btId);
+    newLink.appendChild(newLinkText);
+    newLink.setAttribute("href","#");
+    newLinkPara.appendChild(newLink);
+    el[i].appendChild(newLinkPara);
+    var newLinkEl = document.getElementById("printbut_" + el[i].id);
+    newLinkEl.onclick		=	togglePrintDisplay;
+    newLinkEl.onkeypress	=	togglePrintDisplay;
+    }
+  }
+}
+function togglePrintDisplay(e)
+{
+var whatSection = this.id.split("_");
+whatSection = whatSection[1];
+var el = document.getElementsByTagName("div");
+for (i=0;i<el.length;i++)
+  {
+  if (el[i].className.indexOf("section")!=-1)
+    {
+    el[i].removeAttribute("className");
+    if (el[i].id==whatSection)
+      {
+      //show only this section for print
+      el[i].setAttribute("className","section print");
+      el[i].setAttribute("class","section print");
+      }
+    else
+      {
+      el[i].setAttribute("className","section noprint");
+      el[i].setAttribute("class","section noprint");
+      }
+    }
+  }
+if (window.event) 
+  {
+  window.event.returnValue = false;
+  window.event.cancelBubble = true;
+  }
+else if (e) 
+  {
+  e.stopPropagation();
+  e.preventDefault();
+  }
+window.print();
+}
+addEvent(window, 'load', addPrintLinks, false);
+
+</script>
+<meta http-equiv="Content-Type" 
+content="text/html; charset=iso-8859-1">
+<style type="text/css">
+.section
+{
+border:1px solid gray;
+background:#e1e1e1;
+margin:0 0 15px 0;
+padding:10px;
+}
+@media print
+{
+.noprint, .printbutton
+  {
+  display:none;
+  }
+.print
+  {
+  display:block;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="sect1" class="section">
+<h2>Section 1</h2>
+<p>This be section 1, it do. This be section 1.  </p>
+</div>
+
+<div id="sect2" class="section">
+<h2>Section 2</h2>
+<p>This is section 2. This is section 2. This is section 2. </p>
+</div>
+
+<div id="sect3" class="section">
+<h2>Section 3</h2>
+<p>This is section 3. This is section 3. This is section 3.  </p>
+</div>
+
+
+<div id="sect11"  name="secti1" class="sectionn">
+<h2>Section 11</h2>
+<p>This be section 1, it do. This be section 1.  </p>
+</div>
+
+<div id="sect22"  name="secti2" class="sectionn">
+<h2>Section 22</h2>
+<p>This is section 2. This is section 2. This is section 2. </p>
+</div>
+
+<div id="sect33" name="secti3" class="sectionn">
+<h2>Section 33</h2>
+<p>This is section 3. This is section 3. This is section 3.  </p>
+</div>
+
+</body>
+</html>
